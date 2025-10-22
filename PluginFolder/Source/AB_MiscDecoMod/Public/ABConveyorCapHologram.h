@@ -33,6 +33,9 @@ public:
 	EFactoryConnectionDirection beltFilter;
 
 	UPROPERTY(EditAnywhere)
+	FName nameFilter;
+
+	UPROPERTY(EditAnywhere)
 	FVector offsetRequired;
 };
 
@@ -67,6 +70,9 @@ protected:
 	// The index of the potential connection we're at
 	int pIndex;
 
+	// Is it flipped about the snap point it's on
+	bool bFlipped;
+
 public:
 	// thin the possible connections array to only valid results, return if there's anything left
 	virtual bool ValidatePotentialConnections();
@@ -74,6 +80,7 @@ public:
 	// FactoryGame:
 	//virtual void GetSupportedBuildModes_Implementation(TArray<TSubclassOf<UFGBuildGunModeDescriptor>>& out_buildmodes) const override;
 	//virtual void OnBuildModeChanged(TSubclassOf<UFGHologramBuildModeDescriptor> buildMode) override;
+	virtual void ScrollRotate(int32 delta, int32 step);
 	virtual bool IsValidHitResult(const FHitResult& hitResult) const override;
 	virtual bool CanNudgeHologram() const override;
 	virtual bool TrySnapToActor(const FHitResult& hitResult) override;

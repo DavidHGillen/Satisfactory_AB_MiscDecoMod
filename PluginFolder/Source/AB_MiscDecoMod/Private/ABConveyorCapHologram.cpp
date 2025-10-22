@@ -1,6 +1,14 @@
 #include "ABConveyorCapHologram.h"
 //#include "FGPipeSubsystem.h"
 
+void AABConveyorCapHologram::ScrollRotate(int32 delta, int32 step) {
+	if (mSnappedConnection != NULL) {
+		bFlipped = !bFlipped;
+	} else {
+		Super::ScrollRotate(delta, step);
+	}
+}
+
 bool AABConveyorCapHologram::IsValidHitResult(const FHitResult& hitResult) const {
 	if (Cast<AFGBuildable>(hitResult.GetActor()) != NULL) {
 		return true;
@@ -70,6 +78,7 @@ bool AABConveyorCapHologram::TrySnapToActor(const FHitResult& hitResult) {
 	for (int i = 0, keyCount = offsetMap.Num(); i < keyCount; i++) {
 		if (mSnappedBuilding->GetClass()->IsChildOf(offsetMap[i].relevantBuildable)) {
 			bool compatible = false;
+			bool flipable = false;
 
 			if (validConnectionClass == EABCapType::CCT_Belt) {
 				// check belt type
@@ -78,6 +87,7 @@ bool AABConveyorCapHologram::TrySnapToActor(const FHitResult& hitResult) {
 					offsetMap[i].beltFilter == beltType ||
 					offsetMap[i].beltFilter == EFactoryConnectionDirection::FCD_ANY ||
 					beltType == EFactoryConnectionDirection::FCD_ANY;
+				flipable = beltType == EFactoryConnectionDirection::FCD_SNAP_ONLY;
 
 			} else if (validConnectionClass == EABCapType::CCT_Pipe) {
 				// check pipe type
@@ -86,13 +96,22 @@ bool AABConveyorCapHologram::TrySnapToActor(const FHitResult& hitResult) {
 					offsetMap[i].pipeFilter == pipeType ||
 					offsetMap[i].pipeFilter == EPipeConnectionType::PCT_ANY ||
 					pipeType == EPipeConnectionType::PCT_ANY;
+				flipable = pipeType == EPipeConnectionType::PCT_SNAP_ONLY;
 
 			} else {
 				UE_LOG(LogTemp, Error, TEXT("INVALID AB_CAP_TYPE USED"));
 			}
 
+			// if they set a name filter, test it too
+			if (!offsetMap[i].nameFilter.IsNone()) {
+				compatible &= offsetMap[i].nameFilter == mSnappedConnection->GetFName();
+			}
+
 			if (compatible) {
 				//UE_LOG(LogTemp, Warning, TEXT("[X] [X] offset of %d using %d"), pIndex, i);
+				if (flipable && bFlipped) {
+					AddActorLocalRotation(FRotator(0.0, 180.0, 0.0));
+				}
 				AddActorLocalOffset(offsetMap[i].offsetRequired);
 				break;
 			}
