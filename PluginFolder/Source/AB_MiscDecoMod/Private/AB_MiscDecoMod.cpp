@@ -1,12 +1,17 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AB_MiscDecoMod.h"
+#include "FGBuildableSplitterSmart.h"
 
 #define LOCTEXT_NAMESPACE "FAB_MiscDecoModModule"
 
 void FAB_MiscDecoModModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	// Hooking
+	//#if !WITH_EDITOR
+
+	//#endif
+	// End Hooking
 }
 
 void FAB_MiscDecoModModule::ShutdownModule()
