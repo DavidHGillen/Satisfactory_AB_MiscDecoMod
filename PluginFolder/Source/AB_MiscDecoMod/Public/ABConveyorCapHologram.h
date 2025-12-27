@@ -21,7 +21,7 @@ struct FABOffsetData {
 
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AFGBuildable> relevantBuildable;
+	FSoftClassPath relevantBuildableSoftRef;
 
 	UPROPERTY(EditAnywhere)
 	EABCapType connectionType;
@@ -49,15 +49,15 @@ class AB_MISCDECOMOD_API AABConveyorCapHologram : public AFGBuildableHologram
 
 public:
 	// How to adjust the final position when snapping to ports, relative to that port, for the given buildables
-	UPROPERTY(EditDefaultsOnly, Category = "Hologram|Cap")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hologram|Cap")
 	TArray<FABOffsetData> offsetMap;
 
 	// What classes of connectors to accept or filter out
-	UPROPERTY(EditDefaultsOnly, Category = "Hologram|Cap")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hologram|Cap")
 	EABCapType validConnectionClass;
 
 	// What distance away from the valid connector should we try to connect
-	UPROPERTY(EditDefaultsOnly, Category = "Hologram|Cap")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hologram|Cap")
 	float maxSubSnapDist;
 
 protected:

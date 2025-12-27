@@ -94,7 +94,19 @@ bool AABConveyorCapHologram::TrySnapToActor(const FHitResult& hitResult) {
 
 	// positions aren't perfectly consistent so, adjust
 	for (int i = 0, keyCount = offsetMap.Num(); i < keyCount; i++) {
-		if (mSnappedBuilding->GetClass()->IsChildOf(offsetMap[i].relevantBuildable)) {
+		//TSubclassOf<AFGBuildable> buildable = offsetMap[i].relevantBuildable;
+		TSubclassOf<AFGBuildable> relevantClass = NULL;
+
+		// Try using soft class path
+		if (!IsValid(relevantClass)) {
+			UClass* loadedBuildableClass = offsetMap[i].relevantBuildableSoftRef.TryLoadClass<AFGBuildable>();
+			if (IsValid(loadedBuildableClass)) {
+				relevantClass = loadedBuildableClass;
+			}
+		}
+
+		// Try using found path
+		if (relevantClass != NULL && mSnappedBuilding->GetClass()->IsChildOf(relevantClass)) {
 			bool compatible = false;
 
 			if (validConnectionClass == EABCapType::CCT_Belt) {
