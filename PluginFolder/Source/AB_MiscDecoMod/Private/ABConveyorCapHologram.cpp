@@ -12,7 +12,7 @@ void AABConveyorCapHologram::ScrollRotate(int32 delta, int32 step) {
 
 bool AABConveyorCapHologram::IsValidHitResult(const FHitResult& hitResult) const {
 	// anythings valid so long as it isn't another cap, but since caps have building material swaps, check for something shared
-	AFGBuildable* foundBuildable = Cast<AFGBuildable>(hitResult.GetActor());
+	TObjectPtr<AFGBuildable> foundBuildable = Cast<AFGBuildable>(hitResult.GetActor());
 	if (foundBuildable != NULL) {
 		return !foundBuildable->mHologramClass->IsChildOf(GetClass());
 	}
@@ -25,7 +25,7 @@ bool AABConveyorCapHologram::CanNudgeHologram() const {
 
 bool AABConveyorCapHologram::TrySnapToActor(const FHitResult& hitResult) {
 	// have we hit anything good? reset if not
-	AFGBuildable* foundBuildable = Cast<AFGBuildable>(hitResult.GetActor());
+	TObjectPtr<AFGBuildable> foundBuildable = Cast<AFGBuildable>(hitResult.GetActor());
 	if (foundBuildable == NULL) {
 		mSnappedBuilding = NULL;
 		mSnappedConnection = NULL;
@@ -99,7 +99,7 @@ bool AABConveyorCapHologram::TrySnapToActor(const FHitResult& hitResult) {
 
 		// Try using soft class path
 		if (!IsValid(relevantClass)) {
-			UClass* loadedBuildableClass = offsetMap[i].relevantBuildableSoftRef.TryLoadClass<AFGBuildable>();
+			TObjectPtr<UClass> loadedBuildableClass = offsetMap[i].relevantBuildableSoftRef.TryLoadClass<AFGBuildable>();
 			if (IsValid(loadedBuildableClass)) {
 				relevantClass = loadedBuildableClass;
 			}
@@ -158,7 +158,7 @@ bool AABConveyorCapHologram::ValidatePotentialConnections() {
 
 	for (int i = 0; i < len; i++) {
 		if (validConnectionClass == EABCapType::CCT_Belt) {
-			UFGFactoryConnectionComponent* beltCnx = Cast<UFGFactoryConnectionComponent>(possibleConnections[i]);
+			TObjectPtr<UFGFactoryConnectionComponent> beltCnx = Cast<UFGFactoryConnectionComponent>(possibleConnections[i]);
 			if (beltCnx != NULL && !beltCnx->IsConnected()) { continue; }
 			// TODO: hide arrows and rings in hologram placement mode
 			// TODO: hide arrows and rings in hologram placement mode
@@ -166,7 +166,7 @@ bool AABConveyorCapHologram::ValidatePotentialConnections() {
 			// TODO: hide arrows and rings in hologram placement mode
 
 		} else if (validConnectionClass == EABCapType::CCT_Pipe) {
-			UFGPipeConnectionComponentBase* pipeCnx = Cast<UFGPipeConnectionComponentBase>(possibleConnections[i]);
+			TObjectPtr<UFGPipeConnectionComponentBase> pipeCnx = Cast<UFGPipeConnectionComponentBase>(possibleConnections[i]);
 			if (pipeCnx != NULL && !pipeCnx->IsConnected()) { continue; }
 			// TODO: make hypertubes not count
 			// TODO: make hypertubes not count
@@ -189,18 +189,18 @@ bool AABConveyorCapHologram::ValidatePotentialConnections() {
 	return len > 0;
 }
 
-void AABConveyorCapHologram::ConfigureComponents(AFGBuildable* inBuildable) const {
+void AABConveyorCapHologram::ConfigureComponents(class AFGBuildable* inBuildable) const {
 	if (validConnectionClass == EABCapType::CCT_Belt) {
-		UFGFactoryConnectionComponent* myCnx = inBuildable->GetComponentByClass<UFGFactoryConnectionComponent>();
+		TObjectPtr < UFGFactoryConnectionComponent> myCnx = inBuildable->GetComponentByClass<UFGFactoryConnectionComponent>();
 		if (myCnx != NULL) {
-			UFGFactoryConnectionComponent* theirCnx = Cast<UFGFactoryConnectionComponent>(mSnappedConnection);
+			TObjectPtr < UFGFactoryConnectionComponent> theirCnx = Cast<UFGFactoryConnectionComponent>(mSnappedConnection);
 			myCnx->SetConnection(theirCnx);
 		}
 
 	} else if (validConnectionClass == EABCapType::CCT_Pipe) {
-		UFGPipeConnectionFactory* myCnx = inBuildable->GetComponentByClass<UFGPipeConnectionFactory>();
+		TObjectPtr < UFGPipeConnectionFactory> myCnx = inBuildable->GetComponentByClass<UFGPipeConnectionFactory>();
 		if (myCnx != NULL) {
-			UFGPipeConnectionComponentBase* theirCnx = Cast<UFGPipeConnectionComponentBase>(mSnappedConnection);
+			TObjectPtr < UFGPipeConnectionComponentBase> theirCnx = Cast<UFGPipeConnectionComponentBase>(mSnappedConnection);
 			myCnx->SetConnection(theirCnx);
 		}
 

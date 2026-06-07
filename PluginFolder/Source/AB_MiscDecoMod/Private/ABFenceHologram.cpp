@@ -18,7 +18,7 @@ bool AABFenceHologram::DoMultiStepPlacement(bool isInputFromARelease) {
 }
 
 bool AABFenceHologram::TrySnapToActor(const FHitResult& hitResult) {
-	AFGBuildable* hitBuildable = Cast<AFGBuildable>(hitResult.GetActor());
+	TObjectPtr<AFGBuildable> hitBuildable = Cast<AFGBuildable>(hitResult.GetActor());
 
 	// standard behaviour when snapping barriers
 	if (hitBuildable != NULL && hitBuildable->mHologramClass->IsChildOf(this->GetClass())) {
@@ -42,7 +42,7 @@ void AABFenceHologram::SetHologramLocationAndRotation(const FHitResult& hitResul
 		return;
 	}
 
-	AActor* hitActor = hitResult.GetActor();
+	TObjectPtr<AActor> hitActor = hitResult.GetActor();
 	FRotator outRotation = FRotator::ZeroRotator;
 	FVector outLocation = FVector::Zero();
 
@@ -52,7 +52,7 @@ void AABFenceHologram::SetHologramLocationAndRotation(const FHitResult& hitResul
 	FVector localHitNormal = worldToActor.TransformVector(hitResult.ImpactNormal);
 
 	// beams
-	AFGBuildableBeam* hitBeam = Cast<AFGBuildableBeam>(hitActor);
+	TObjectPtr<AFGBuildableBeam> hitBeam = Cast<AFGBuildableBeam>(hitActor);
 	if (hitBeam != NULL) {
 		// incase somone bevels the edges of the beam or something, snap to cardinal directions and local units
 		float facing = FMath::Abs(localHitNormal.Y) > FMath::Abs(localHitNormal.Z) ? (localHitNormal.Y > 0.0f ? 90.0f : 270.0f) : (localHitNormal.Z > 0.0f ? 0.0f : 180.0f);
@@ -70,7 +70,7 @@ void AABFenceHologram::SetHologramLocationAndRotation(const FHitResult& hitResul
 	}
 
 	// pillars
-	AFGBuildablePillar* hitPillar = Cast<AFGBuildablePillar>(hitActor);
+	TObjectPtr<AFGBuildablePillar> hitPillar = Cast<AFGBuildablePillar>(hitActor);
 	if (hitPillar != NULL) {
 		// pillars are guarenteed to be some rect with even dimensions
 		outLocation = localHitPosition.GridSnap(mGridSnapSize);
@@ -85,13 +85,13 @@ void AABFenceHologram::SetHologramLocationAndRotation(const FHitResult& hitResul
 	}
 
 	// foundations enable side snapping and handle underside snapping, also follow slopes
-	AFGBuildableFoundation* hitFoundation = Cast<AFGBuildableFoundation>(hitActor);
+	TObjectPtr<AFGBuildableFoundation> hitFoundation = Cast<AFGBuildableFoundation>(hitActor);
 	if (hitFoundation != NULL) {
 		FVector absLocalNormal = localHitNormal.GetAbs();
 		bool nonCardinal = absLocalNormal.X < 0.998f && absLocalNormal.Y < 0.998f && absLocalNormal.Z < 0.998f;
 		bool onTheUnderside = localHitNormal.Z < 0.0f;
 
-		AFGBuildableRamp* hitRamp = Cast<AFGBuildableRamp>(hitActor);
+		TObjectPtr<AFGBuildableRamp> hitRamp = Cast<AFGBuildableRamp>(hitActor);
 		if (hitRamp != NULL && nonCardinal) {
 			// ramp's ramped surface enjoy special behaviours not of the utility
 			float slopeHigh = hitRamp->mElevation * 0.5f;
@@ -136,9 +136,9 @@ void AABFenceHologram::SetHologramLocationAndRotation(const FHitResult& hitResul
 }
 
 bool AABFenceHologram::SetGroundedLocationAndRotation(const FHitResult& hitResult) {
-	UWorld* zeWorld = GetWorld();
+	TObjectPtr<UWorld> zeWorld = GetWorld();
 	FRotator outRotation = FRotator(0.0f, GetScrollRotateValue(), 0.0f);
-	AFGBuildableWall* myWall = GetDefaultBuildable<AFGBuildableWall>();
+	TObjectPtr<AFGBuildableWall> myWall = GetDefaultBuildable<AFGBuildableWall>();
 	float fLength = myWall == NULL ? 400.0f : myWall->mWidth;
 	float fStep = fLength / iAccuracy;
 	float fStart = fLength * -0.5 + fStep * 0.5;

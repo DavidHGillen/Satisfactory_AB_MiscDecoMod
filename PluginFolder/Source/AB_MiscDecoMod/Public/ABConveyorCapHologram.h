@@ -62,10 +62,10 @@ public:
 
 protected:
 	// The connection on the building we're snapped to
-	UFGConnectionComponent* mSnappedConnection;
+	TObjectPtr<UFGConnectionComponent> mSnappedConnection;
 
 	// The connection on the building we're snapped to
-	TArray<UFGConnectionComponent*> possibleConnections;
+	TArray<TObjectPtr<UFGConnectionComponent>> possibleConnections;
 
 	// The index of the potential connection we're at
 	int pIndex;

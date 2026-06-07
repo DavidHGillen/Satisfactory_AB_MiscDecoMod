@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AB_MiscDecoMod.h"
-#include "FGBuildableSplitterSmart.h"
 
 #define LOCTEXT_NAMESPACE "FAB_MiscDecoModModule"
 
