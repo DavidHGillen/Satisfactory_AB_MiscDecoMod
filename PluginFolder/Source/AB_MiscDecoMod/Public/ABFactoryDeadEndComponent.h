@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "FGFactoryConnectionComponent.h"
+#include "Buildables/FGBuildableConveyorAttachment.h"
 #include "ABFactoryDeadEndComponent.generated.h"
 
 /**
@@ -28,4 +29,16 @@ public:
 		mOuterBuildable = myBuildable;
 		Super::OnUnregister();
 	}*/
+
+	static TArray< UFGFactoryConnectionComponent* > GetIOFromAttachment(AFGBuildableConveyorAttachment* source) {
+		TArray< UFGFactoryConnectionComponent* > temp;
+		UE_LOG(LogTemp, Warning, TEXT("----"));
+		UE_LOG(LogTemp, Warning, TEXT("%d"), source->mInputs.Num());
+		temp.Append(source->mInputs);
+		UE_LOG(LogTemp, Warning, TEXT("%d"), source->mOutputs.Num());
+		temp.Append(source->mOutputs);
+		UE_LOG(LogTemp, Warning, TEXT("%d"), temp.Num());
+		UE_LOG(LogTemp, Warning, TEXT("----"));
+		return temp;
+	}
 };

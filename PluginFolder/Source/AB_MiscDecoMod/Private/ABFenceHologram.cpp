@@ -46,6 +46,12 @@ void AABFenceHologram::SetHologramLocationAndRotation(const FHitResult& hitResul
 	FRotator outRotation = FRotator::ZeroRotator;
 	FVector outLocation = FVector::Zero();
 
+	// all this code is for special rules based upon what was targeted. without anything special there's no special rules
+	if (hitActor == nullptr) { 
+		Super::SetHologramLocationAndRotation(hitResult);
+		return;
+	}
+
 	FTransform actorToWorld = hitActor->GetTransform();
 	FTransform worldToActor = actorToWorld.Inverse();
 	FVector localHitPosition = worldToActor.TransformPosition(hitResult.ImpactPoint);
