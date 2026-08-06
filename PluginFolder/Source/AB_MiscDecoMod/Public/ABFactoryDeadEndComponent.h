@@ -32,13 +32,8 @@ public:
 
 	static TArray< UFGFactoryConnectionComponent* > GetIOFromAttachment(AFGBuildableConveyorAttachment* source) {
 		TArray< UFGFactoryConnectionComponent* > temp;
-		UE_LOG(LogTemp, Warning, TEXT("----"));
-		UE_LOG(LogTemp, Warning, TEXT("%d"), source->mInputs.Num());
 		temp.Append(source->mInputs);
-		UE_LOG(LogTemp, Warning, TEXT("%d"), source->mOutputs.Num());
 		temp.Append(source->mOutputs);
-		UE_LOG(LogTemp, Warning, TEXT("%d"), temp.Num());
-		UE_LOG(LogTemp, Warning, TEXT("----"));
 		return temp;
 	}
 };

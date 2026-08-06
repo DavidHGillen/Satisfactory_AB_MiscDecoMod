@@ -11,32 +11,19 @@ void FAB_MiscDecoModModule::StartupModule()
 {
 	// Hooking
 	if (!WITH_EDITOR) {
-		AFGBuildableConveyorAttachment* VirtualRef_Attachment = GetMutableDefault<AFGBuildableConveyorAttachment>();
-		SUBSCRIBE_METHOD_VIRTUAL(AFGBuildableConveyorAttachment::Dismantle_Implementation, VirtualRef_Attachment, [](auto& Scope, AFGBuildableConveyorAttachment* self) {
-		//SUBSCRIBE_UOBJECT_METHOD(AFGBuildableConveyorAttachment, Dismantle_Implementation, [](auto& Scope, AFGBuildableConveyorAttachment* self) {
-			UE_LOG(LogTemp, Warning, TEXT("===****===****===****===****===****===****===****===****"));
+		IFGDismantleInterface* VirtualRef_Attachment = GetMutableDefault<AFGBuildableConveyorAttachment>();
+		SUBSCRIBE_METHOD_VIRTUAL(IFGDismantleInterface::Dismantle_Implementation, VirtualRef_Attachment, [](auto& Scope, IFGDismantleInterface* self) {
+			//UE_LOG(LogTemp, Warning, TEXT("===****===****===****===****===****===****===****===****"));
 
-			TArray< UFGFactoryConnectionComponent* > check;
-			//UABFactoryDeadEndComponent* testResult;
+			AFGBuildableConveyorAttachment* selfSrc = Cast<AFGBuildableConveyorAttachment>(self);
+			TArray< UFGFactoryConnectionComponent* > check = UABFactoryDeadEndComponent::GetIOFromAttachment(selfSrc);
 
-			UE_LOG(LogTemp, Warning, TEXT("%d"), self);
-
-			check = UABFactoryDeadEndComponent::GetIOFromAttachment(self);
-			UE_LOG(LogTemp, Warning, TEXT("%d"), check.Num());
 			for (int i=0, l=check.Num(); i < l; i++) {
-				UE_LOG(LogTemp, Warning, TEXT("????"));
-				/*testResult = Cast<UABFactoryDeadEndComponent>(check[i]->GetConnection());
+				UABFactoryDeadEndComponent* testResult = Cast<UABFactoryDeadEndComponent>(check[i]->GetConnection());
 				if (testResult != nullptr) {
-					UE_LOG(LogTemp, Warning, TEXT("!!!!"));
 					check[i]->ClearConnection();
-				}*/
+				}
 			}
-
-			/**
-				->ClearConnection();
-				TArray< UFGFactoryConnectionComponent* > mInputs;
-				TArray< UFGFactoryConnectionComponent* > mOutputs;
-			**/
 			});
 	}
 	// End Hooking
